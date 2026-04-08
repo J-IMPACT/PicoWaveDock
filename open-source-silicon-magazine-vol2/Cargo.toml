@@ -1,0 +1,6 @@
+[package]
+name = "open-source-silicon-magazine-vol2"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
