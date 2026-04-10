@@ -52,8 +52,9 @@ unsafe impl Sync for AdcPool {} // we will enforce safety via our own index disc
 static ADC_POOL: AdcPool = AdcPool(UnsafeCell::new([[0; ADC_SAMPLES_PER_BUF]; N_BUFS]));
 
 // ===== Queue =====
-static FREE_Q: Mutex<RefCell<Queue<usize, N_BUFS>>> = Mutex::new(RefCell::new(Queue::new()));
-static READY_Q: Mutex<RefCell<Queue<usize, N_BUFS>>> = Mutex::new(RefCell::new(Queue::new()));
+const Q_SIZE: usize = N_BUFS + 1;
+static FREE_Q: Mutex<RefCell<Queue<usize, Q_SIZE>>> = Mutex::new(RefCell::new(Queue::new()));
+static READY_Q: Mutex<RefCell<Queue<usize, Q_SIZE>>> = Mutex::new(RefCell::new(Queue::new()));
 
 // SAFETY: caller must ensure no aliasing of the same idx (our DMA/queue discipline does that)
 #[inline(always)]
@@ -75,13 +76,13 @@ fn DMA_IRQ_0() {
 }
 
 // ===== Wave settings =====
-const OUTPUT_HZ: u32 = 100_000;
+const OUTPUT_HZ: u32 = 75_000;
 const PROGRAM_STEP_HZ: u32 = OUTPUT_HZ * 2;
 
 // sin(2 * pi * 1kHz / OUTPUT_HZ)
-const SIN_DELTA: f64 = 0.06279051952931336;
+const SIN_DELTA: f64 = 0.08367784333231548;
 // cos(2 * pi * 1kHz / OUTPUT_HZ)
-const COS_DELTA: f64 = 0.9980267284282716;
+const COS_DELTA: f64 = 0.9964928592495044;
 
 #[hal::entry]
 fn main() -> ! {
@@ -241,7 +242,7 @@ fn main() -> ! {
             adc_started = true;
         }
 
-// === 1) USB TX: if stagged chunk exists, flush it ===
+        // === 1) USB TX: if stagged chunk exists, flush it ===
         if tx_chunk_off < tx_chunk_len {
             match serial.write(&tx_chunk[tx_chunk_off..tx_chunk_len]) {
                 Ok(0) | Err(_) => {}
@@ -370,12 +371,12 @@ fn core1_pio_task(
     let int = (sys_hz / PROGRAM_STEP_HZ) as u16;
     let rem = sys_hz % PROGRAM_STEP_HZ;
     let frac = ((rem * 256) / PROGRAM_STEP_HZ) as u8;
-    let (mut sm, _, mut tx) = hal::pio::PIOBuilder::from_installed_program(installed)
+    let (mut sm0, _, mut tx) = hal::pio::PIOBuilder::from_installed_program(installed)
         .out_pins(d0.id().num, 16)
         .clock_divisor_fixed_point(int, frac)
         .build(sm0);
-    sm.set_pindirs((0..16 as u8).map(|pin| (pin, hal::pio::PinDir::Output)));
-    sm.start();
+    sm0.set_pindirs((0..16 as u8).map(|pin| (pin, hal::pio::PinDir::Output)));
+    sm0.start();
 
     let (mut sn, mut cn) = (0f64, 1f64);
     loop {
