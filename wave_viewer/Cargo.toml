@@ -1,0 +1,26 @@
+[package]
+name = "wave_viewer"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+anyhow = "1.0.100"
+clap = { version = "4.5.53", features = ["derive"] }
+eframe = "0.33.3"
+egui = "0.33.3"
+egui_plot = "0.34.0"
+num-traits = "0.2.19"
+rustfft = "6.4.1"
+serialport = "4.8.1"
+
+[[bin]]
+name = "plot"
+path = "src/plot.rs"
+
+[[bin]]
+name = "scope"
+path = "src/scope.rs"
+
+[[bin]]
+name = "fft_bin"
+path = "src/fft_bin.rs"

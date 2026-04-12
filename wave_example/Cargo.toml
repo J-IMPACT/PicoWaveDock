@@ -1,0 +1,28 @@
+[package]
+name = "wave_example"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+cortex-m = "0.7.7"
+cortex-m-rt = { version = "0.7.5", features = [] }
+critical-section = "1.2.0"
+embedded-hal = "1.0.0"
+heapless = "0.9.2"
+panic-halt = "1.0.0"
+pio = "0.3.0"
+rp235x-hal = { version = "0.4.0", features = ["critical-section-impl"] }
+usb-device = "0.3.2"
+usbd-serial = "0.2.2"
+
+[[bin]]
+name = "gen_and_scope"
+path = "src/gen_and_scope.rs"
+
+[[bin]]
+name = "ultrasound_and_spectrum"
+path = "src/ultrasound_and_spectrum.rs"
+
+[[bin]]
+name = "serial_control_sin"
+path = "src/serial_control_sin.rs"
