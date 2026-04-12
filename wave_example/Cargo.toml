@@ -26,3 +26,7 @@ path = "src/ultrasound_and_spectrum.rs"
 [[bin]]
 name = "serial_control_sin"
 path = "src/serial_control_sin.rs"
+
+[[bin]]
+name = "play_music"
+path = "src/play_music.rs"

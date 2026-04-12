@@ -1,6 +1,6 @@
 #![no_std]
 
-// pub mod music;
+pub mod music;
 pub mod tables;
 
 use rp235x_hal::dma::Word;
