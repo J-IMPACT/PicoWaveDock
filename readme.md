@@ -122,6 +122,8 @@ Raspberry Pi Pico2に`wave_example/src/serial_control_sin.rs`を書き込む。
 
 - コンソール画面が出ない場合は`Enter`キーを押す
 
+![](img/console.png)
+
 ### 16kHzの矩形波をスピーカーから出力し、マイクでスペクトログラムを見る
 
 - スイッチはすべて`PAS`と`SND`にする
