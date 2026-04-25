@@ -1,5 +1,7 @@
 # PicoWaveDock クイックスタートガイド
 
+![PicoWaveDock](img/PicoWaveDock.jpg)
+
 ## 基本的な使い方
 
 1. Raspberry Pi Pico 2（別売り）をソケットにセットする
